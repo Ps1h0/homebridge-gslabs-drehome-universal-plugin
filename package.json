@@ -1,0 +1,21 @@
+{
+    "name": "homebridge-gslabs-drehome-universal-plugin",
+    "version": "0.0.1",
+    "description": "Universal plugin for Drehome",
+    "license": "the most strict license",
+    "keywords": [
+        "homebridge-plugin",
+        "homebridge-gs"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://gitlab.se.ifmo.ru/cse/project-based-master/2021-2023/smart-home-controller-interfacing/nikita-platonov/smart-home-drehome.git"
+      },
+    "engines": {
+        "node": ">=10.17.0",
+        "homebridge": ">=0.4.8"
+    },
+    "dependencies": {
+        "axios": "^0.25.0"
+    }
+}
