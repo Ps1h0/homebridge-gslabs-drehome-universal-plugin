@@ -1,6 +1,6 @@
 {
     "displayName": "Homebridge GS Labs Drehome Universal Plugin",
-    "name": "homebridge-gs-labs-drehome-universal-plugin",
+    "name": "homebridge-gslabs-drehome-universal-plugin",
     "version": "1.0",
     "description": "Universal plugin for Drehome",
     "license": "the most strict license",
