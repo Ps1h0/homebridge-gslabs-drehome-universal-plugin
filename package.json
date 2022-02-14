@@ -4,14 +4,17 @@
     "version": "0.0.1",
     "description": "Universal plugin for Drehome",
     "license": "the most strict license",
-    "keywords": [
-        "homebridge-plugin",
-        "homebridge-gs"
-    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/Ps1h0/homebridge-gslabs-drehome-universal-plugin.git"
       },
+    "keywords": [
+        "homebridge-plugin",
+        "homebridge-gs",
+        "drehome",
+        "gs",
+        "GS Labs"
+    ],
     "engines": {
         "node": ">=10.17.0",
         "homebridge": ">=0.4.8"
