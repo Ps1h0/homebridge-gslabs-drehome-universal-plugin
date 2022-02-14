@@ -9,7 +9,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://gitlab.se.ifmo.ru/cse/project-based-master/2021-2023/smart-home-controller-interfacing/nikita-platonov/smart-home-drehome.git"
+        "url": "https://github.com/Ps1h0/homebridge-gslabs-drehome-universal-plugin.git"
       },
     "engines": {
         "node": ">=10.17.0",
