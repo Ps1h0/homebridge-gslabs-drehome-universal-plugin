@@ -15,6 +15,7 @@
         "gs",
         "GS Labs"
     ],
+    "author": "Ps1h0 (Nikita Platonov)",
     "engines": {
         "node": ">=10.17.0",
         "homebridge": ">=0.4.8"
