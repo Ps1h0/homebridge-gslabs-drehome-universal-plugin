@@ -8,10 +8,10 @@ const map = new Map();
 module.exports = (api) => {
     Service = api.hap.Service;
     Characteristic = api.hap.Characteristic;
-    //Название, которое будет искаться в конфиге + Класс, реализующий функциональность
     api.registerAccessory('LightbulbGSLabs', LightbulbGSLabs);
     api.registerAccessory('RosetteGSLabs', RosetteGSLabs);
     api.registerAccessory('OpenSensorGSLabs', OpenSensorGSLabs);
+    api.registerAccessory('MotionSensorGSLabs', MotionSensorGSLabs);
 };
 
 //Добавление в мапу устройств
@@ -56,17 +56,13 @@ class LightbulbGSLabs {
         this.bulb.addCharacteristic(Characteristic.Brightness)
             .on("get", this.getBrightness.bind(this))
             .on("set", this.setBrightness.bind(this));
-
-        // this.bulb.addCharacteristic(Characteristic.ColorTemperature)
-        //     .on("get", this.getColor.bind(this))
-        //     .on("set", this.setColor.bind(this));
     }
 
     getServices() {
         if (!this.bulb) return [];
 
         const infoService = new Service.AccessoryInformation();
-        infoService.setCharacteristic(Characteristic.Manufacturer, 'GS Labs 2022 Nikita Platonov');
+        infoService.setCharacteristic(Characteristic.Manufacturer, 'Nikita Platonov 2022');
 
         return [infoService, this.bulb];
     }
@@ -94,10 +90,6 @@ class LightbulbGSLabs {
                         let updBrightness = zcl.attributes[0].str_attr_value;
                         this.bulb.getCharacteristic(Characteristic.Brightness).updateValue(Math.round(updBrightness / 2.54));
                     }
-                    // if (zcl.zcl_id === 768) {
-                    //     this.color = zcl.attributes[5].str_attr_value;
-                    //     this.log('COLOR', this.color);
-                    // }
                 })
             });
 
@@ -179,18 +171,6 @@ class LightbulbGSLabs {
         this.triggeredby = 'slider';
         callback(null);
     }
-
-    // getColor(callback){
-    //     this.log('getColor ' + this.color);
-    //     callback(0);
-    // }
-
-    // setColor(color, callback){
-    //     this.log('setColor '+ color);
-    //     this.color = color;
-    //     this.triggeredby = 'color';
-    //     callback(null);
-    // }
 }
 
 class RosetteGSLabs {
@@ -215,7 +195,7 @@ class RosetteGSLabs {
         if (!this.rosette) return [];
 
         const infoService = new Service.AccessoryInformation();
-        infoService.setCharacteristic(Characteristic.Manufacturer, 'GS Labs 2022 Nikita Platonov');
+        infoService.setCharacteristic(Characteristic.Manufacturer, 'Nikita Platonov 2022');
 
         return [infoService, this.rosette];
     }
@@ -313,7 +293,55 @@ class OpenSensorGSLabs {
     getServices() {
         if (!this.sensor) return [];
         const infoService = new Service.AccessoryInformation();
-        infoService.setCharacteristic(Characteristic.Manufacturer, 'GS Labs 2022 Nikita Platonov')
+        infoService.setCharacteristic(Characteristic.Manufacturer, 'Nikita Platonov 2022')
+        return [infoService, this.sensor];
+    }
+
+    handleMotionDetectedGet(callback) {
+        let isOn = 32;
+        let id = map.get(this.config.name);
+
+        setInterval(() => {
+            axios({
+                method: 'get',
+                url: 'http://' + this.ip + ':60000/v1.3/smarthome/devices?dev_id=' + id,
+                headers: {
+                    Authorization: 'Token aGksbWF4ISBrYWsgZGVsYT8=',
+                }
+            })
+                .then(res => {
+                    isOn = res.data[0].zcluster.filter(zcl => {
+                        if (zcl.zcl_id === 1280) {
+                            isOn = zcl.attributes[2].str_attr_value;
+                            this.sensor.getCharacteristic(Characteristic.MotionDetected).updateValue(isOn == 33);
+                        }
+                    })
+                });
+        }, 1000);
+        callback(null, isOn);
+    }
+}
+
+class MotionSensorGSLabs {
+    constructor(log, config, api) {
+        this.log = log;
+        this.config = config;
+        this.api = api;
+        this.ip = config.ip;
+
+        addToMap(this.config, this.ip);
+
+        this.sensor = new Service.MotionSensor(this.config.name);
+
+        this.sensor.getCharacteristic(Characteristic.MotionDetected)
+            .on("get", this.handleMotionDetectedGet.bind(this));
+
+    }
+
+    getServices() {
+        if (!this.sensor) return [];
+        const infoService = new Service.AccessoryInformation();
+        infoService.setCharacteristic(Characteristic.Manufacturer, 'Nikita Platonov 2022')
         return [infoService, this.sensor];
     }
 
